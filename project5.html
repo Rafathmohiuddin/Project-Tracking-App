@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tracking App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="number"], input[type="checkbox"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>Project Tracking App</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Sl. No.</th>
+                <th>Project Name</th>
+                <th>Status</th>
+                <th>Value</th>
+                <th>Team Member</th>
+                <th>Update</th>
+                <th>POs till 08/10/2024</th>
+                <th>WO till 08/10/2024</th>
+                <th>WO Upto Current Month</th>
+                <th>POs Upto Current Month</th>
+                <th>Total Department Bills</th>
+                <th>Department Bills Updated</th>
+                <th>Remaining Department Bills</th>
+            </tr>
+        </thead>
+        <tbody id="project-table">
+            <!-- JavaScript will populate this -->
+        </tbody>
+    </table>
+    <script>
+        // Sample data based on your project list
+        const projects = [
+            { id: 1, name: "APSIDC Bonthu", status: "Forward", value: "", team: "Qadir and Srikanth" },
+            { id: 2, name: "Manthralayam", status: "Forward", value: "", team: "Qadir" },
+            { id: 3, name: "TSIDC - Velgatoor", status: "Forward", value: "", team: "Ashok and Mukesh" },
+            { id: 4, name: "TSIDC - Keshavapuram", status: "Forward", value: "", team: "Rafath and Srikanth" },
+            { id: 5, name: "ITC Bhadrachalam", status: "Forward", value: "", team: "Mukesh" },
+            { id: 6, name: "VIDC Ganoja", status: "Forward", value: "", team: "Rafath and Mukesh" },
+            { id: 7, name: "L&T Cluster XX", status: "Forward", value: "", team: "Ashok and Rafath" },
+            { id: 8, name: "Ramnad", status: "Forward", value: "", team: "Srikanth" },
+            { id: 9, name: "KWA-JJM Alakkode Pkg-II Reech", status: "Forward", value: "87,86,29,979.00", team: "Qadir" },
+            { id: 10, name: "KWA-JJM Desamangalam", status: "Forward", value: "1,14,60,80,153.00", team: "Srikanth" },
+            { id: 11, name: "KWA-JJM Edappal", status: "Forward", value: "59,61,19,277.00", team: "Ashok" },
+            { id: 12, name: "KWA-JJM Moopainad Mappadi", status: "Forward", value: "91,91,97,527.00", team: "Mukesh" },
+            { id: 13, name: "KWA-JJM Thrikkalangode 53cr", status: "Forward", value: "53,63,04,732.00", team: "Ashok" },
+            { id: 14, name: "KWA-JJM Ponnani IB", status: "Forward", value: "35,37,42,655.00", team: "Srikanth" },
+            { id: 15, name: "KWA-JJM Thrikkalangode", status: "Forward", value: "1,04,82,90,287.00", team: "Qadir" },
+            { id: 16, name: "KWA-JJM Trippangottur", status: "Forward", value: "1,08,42,56,345.00", team: "Srikanth" },
+            { id: 17, name: "Elevenchery 6cr", status: "Forward", value: "6,25,63,775.00", team: "Ashok" },
+            { id: 18, name: "KWA-JJM Alakkode Pkg-I WTP", status: "Forward", value: "63,13,54,392.00", team: "Mukesh" },
+            { id: 19, name: "Munniyur- Balance", status: "Forward", value: "LOA Not Received", team: "Mukesh" },
+            { id: 20, name: "Elevenchery 16cr", status: "Forward", value: "LOA Not Received", team: "Shireesha and Ashok and Rafath" },
+            { id: 21, name: "Edappal 4cr", status: "Forward", value: "4,98,33,176.00", team: "Shireesha and Qadir" },
+            { id: 22, name: "Thallasarry", status: "Forward", value: "LOA Not Received", team: "Qadir" },
+        ];
+
+        // Function to load projects into the table
+        function loadProjects() {
+            const table = document.getElementById("project-table");
+            projects.forEach(project => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${project.id}</td>
+                    <td>${project.name}</td>
+                    <td>${project.status}</td>
+                    <td>${project.value}</td>
+                    <td>${project.team}</td>
+                    <td><input type="checkbox" class="update-checkbox" data-id="${project.id}"></td>
+                    <td><input type="checkbox" class="update-checkbox" data-id="${project.id}"><input type="number" class="pos-till" data-id="${project.id}" oninput="updateRemaining(${project.id})" value="0"></td>
+                    <td><input type="checkbox" class="update-checkbox" data-id="${project.id}"><input type="number" class="wo-till" data-id="${project.id}" oninput="updateRemaining(${project.id})" value="0"></td>
+                    <td><input type="checkbox" class="update-checkbox" data-id="${project.id}"><input type="number" class="wo-up-to" data-id="${project.id}" oninput="updateRemaining(${project.id})" value="0"></td>
+                    <td><input type="checkbox" class="update-checkbox" data-id="${project.id}"><input type="number" class="pos-up-to" data-id="${project.id}" oninput="updateRemaining(${project.id})" value="0"></td>
+                    <td><input type="number" class="total-bills" data-id="${project.id}" oninput="updateRemaining(${project.id})" value="0"></td>
+                    <td><input type="number" class="updated-bills" data-id="${project.id}" oninput="updateRemaining(${project.id})" value="0"></td>
+                    <td><input type="number" class="remaining-bills" data-id="${project.id}" value="0" readonly></td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        // Function to update the remaining department bills
+        function updateRemaining(projectId) {
+            const totalBillsInput = document.querySelector(`.total-bills[data-id="${projectId}"]`);
+            const updatedBillsInput = document.querySelector(`.updated-bills[data-id="${projectId}"]`);
+            const remainingBillsInput = document.querySelector(`.remaining-bills[data-id="${projectId}"]`);
+
+            const totalBills = parseFloat(totalBillsInput.value) || 0;
+            const updatedBills = parseFloat(updatedBillsInput.value) || 0;
+
+            // Calculate remaining bills
+            const remainingBills = totalBills - updatedBills;
+            remainingBillsInput.value = remainingBills < 0 ? 0 : remainingBills; // Ensure it doesn't go negative
+        }
+
+        // Call the function to load projects on page load
+        window.onload = loadProjects;
+    </script>
+</body>
+</html>
